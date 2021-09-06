@@ -59,11 +59,16 @@ Because we are getting the cities dinamically, we don't want to do a cleaning or
 
 ## Conclusions
 
-For this example I have used 3 locations where I have worked, so there are 3 technological Park (England, Spain, Belgium).
+For this example I have used 3 locations where I have worked, so there are 3 technological Parks (England, Spain, Belgium).
+So they are pretty close in all the demands of the workers.
 
-This is our output: 
+Because I create the polls randomly, this result could vary, and because this 3 city are than close to each other meeting the requirements, that winner could change for other execution of the code.
 
-![image](https://user-images.githubusercontent.com/82879300/132257088-7eab4a0a-b840-4d7a-ba4f-321edff08ad0.png)
+This is our output for this especific example: 
+
+seville_cartuja 7.175097894466844
+brussels_diegem 6.725493026472387
+reading_greenpark 7.747075808502308
 
 
 
