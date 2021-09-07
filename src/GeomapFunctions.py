@@ -9,7 +9,7 @@ from folium import Choropleth, Circle, Marker, Icon, Map
 from geopy.geocoders import Nominatim
 from pymongo import MongoClient
 
-
+# TODO comment every function
 def call_api_foursquare (query, coordinates, url_query, client_id, client_secret ):
     parametros = {
         "client_id": client_id,
@@ -165,6 +165,9 @@ def mean_list(list_marks):
         list_mean.append(marks_df[i].mean())
     return list_mean
 
+
+# TODO add an dictionary as a parameter in the function(Configuration) with the weight of every group of worker
+# so that, every group will have different weight on the totoal of weights. Obviously, data will have the bigger weight
 def calculate_marks_mean():
     list_mean_total = []
     number_features = 8
@@ -320,7 +323,7 @@ def set_markers(map_cities, df, origin_location):
     return map_cities
 
 
-def input_cities():
+def input_cities(list_sp, list_en):
     geolocator = Nominatim(user_agent="Geomaps")
 
     city_name1 = input("Set the first city: ")
@@ -333,6 +336,15 @@ def input_cities():
         city_name1 = "seville_cartuja"
         print("default location 1 : ", city_name1)
 
+    while True :
+        city_lang_input1 = input("select a language for the first city: (en/sp): ")
+        if city_lang_input1.lower() == 'en':
+            city_lang1 = list_en
+            break
+        if city_lang_input1.lower() == 'sp':
+            city_lang1 = list_sp
+            break
+
     city_name2 = input("Set the second city: ")
     try:
         location_geo2 = geolocator.geocode(city_name2)
@@ -342,6 +354,15 @@ def input_cities():
         city_location2 = [50.888243561864115, 4.445462993709954]
         city_name2 = "brussels_diegem"
         print("default location 2 : ", city_name2)
+
+    while True :
+        city_lang_input2 = input("select a language for the first city: (en/sp): ")
+        if city_lang_input2.lower() == 'en':
+            city_lang2 = list_en
+            break
+        if city_lang_input2.lower() == 'sp':
+            city_lang2 = list_sp
+            break
 
     city_name3 = input("Set the third city: ")
     try:
@@ -353,7 +374,16 @@ def input_cities():
         city_name3 = "reading_greenpark"
         print("default location 3 : ", city_name3)
 
-    return city_name1, city_location1, city_name2, city_location2, city_name3, city_location3
+    while True:
+        city_lang_input3 = input("select a language for the first city: (en/sp): ")
+        if city_lang_input3.lower() == 'en':
+            city_lang3 = list_en
+            break
+        if city_lang_input3.lower() == 'sp':
+            city_lang3 = list_sp
+            break
+
+    return city_name1, city_location1, city_name2, city_location2, city_name3, city_location3, city_lang1, city_lang2, city_lang3
 
 
 def input_data_base():
