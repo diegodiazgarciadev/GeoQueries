@@ -1,16 +1,23 @@
 import requests
-from functools import reduce
-import operator
-import json
-import pymongo
 import pandas as pd
 import numpy as np
 from folium import Choropleth, Circle, Marker, Icon, Map
 from geopy.geocoders import Nominatim
 from pymongo import MongoClient
+import src.mongodbFunctions as mdb
+from functools import reduce
+import operator
 
-# TODO comment every function
+
+
 def call_api_foursquare (query, coordinates, url_query, client_id, client_secret ):
+    """ calling to fourSquare API
+     args : query, coordinates, url_query, client_id, client_secret  (
+     parameter we will use to search on the query, coordinates of our origin point,
+     url of the forsquare API, cliend_id Token Client secret token)
+
+     returns : response  (Return the response of excuting the API)
+     """
     parametros = {
         "client_id": client_id,
         "client_secret": client_secret,
@@ -24,6 +31,12 @@ def call_api_foursquare (query, coordinates, url_query, client_id, client_secret
 
 
 def json_api_to_dic(city_coordiantes, language, url_query, client_id, client_secret):
+    """ calling to fourSquare API for every serching parameter and creating a dictionary for that.
+      args : city_coordiantes, language, url_query, client_id, client_secret) (
+      coordinates of the city, language of the city,url of the forsquare API,  cliend_id Token Client secret token )
+
+      returns : dictioary  (a dictioary with all the information of calling foursquare API for every parameter in a city
+      """
     json_vegan = call_api_foursquare(language[0], city_coordiantes, url_query, client_id, client_secret)
     json_startup = call_api_foursquare(language[1], city_coordiantes, url_query, client_id, client_secret)
     json_guarderias = call_api_foursquare(language[2], city_coordiantes, url_query, client_id, client_secret)
@@ -44,16 +57,24 @@ def json_api_to_dic(city_coordiantes, language, url_query, client_id, client_sec
         "doggrummer": json_peluqueria
     }
 
-def getFromDict(diccionario, mapa):
-    return reduce(operator.getitem,mapa,diccionario)
-
 def type_point(lista):
     return {"type": "Point",
             "coordinates": lista
     }
 
 
+def getFromDict(diccionario, mapa):
+    return reduce(operator.getitem, mapa, diccionario)
+
+
 def json_reduced(response, type_=""):
+    """
+    Create a reduce jason with the paremeter we want to keep from the response.
+    Args:
+        response (response): response from an API call in foursquare
+    Returns:
+        json: json reduced
+    """
     mapa_nombre = ["venue", "name"]
     mapa_latitud = ["venue", "location", "lat"]
     mapa_longitud = ["venue", "location", "lng"]
@@ -77,42 +98,12 @@ def build_dic_json_to_mongo(dic_json_cities):
         dictionary[k] = json_reduced(v)
     return dictionary
 
-def export_dump (name, json_to_save) :
-    with open(name, 'w') as f:
-        json.dump(json_to_save,f)
-
-
-def create_collections_in_mongo(db, dic_json_to_mongo, place):
-    for k, v in dic_json_to_mongo.items():
-        file_path = f"./data/{k}_{place}.json"
-        export_dump(file_path, v)
-
-        with open(file_path) as file:
-            file_data = json.load(file)
-
-        Collection = db[k]
-
-        if isinstance(file_data, list):
-            Collection.insert_many(file_data)
-        else:
-            Collection.insert_one(file_data)
-
-        Collection.create_index([("location", pymongo.GEOSPHERE)])
-
-def drop_collections(db):
-    db.get_collection("vegan_restaurant").drop()
-    db.get_collection("airport").drop()
-    db.get_collection("school").drop()
-    db.get_collection("pubs").drop()
-    db.get_collection("kindergarden").drop()
-    db.get_collection("doggrummer").drop()
-    db.get_collection("venga_restaurant").drop()
-    db.get_collection("starbucks").drop()
-    db.get_collection("startup").drop()
-    db.get_collection("train").drop()
-
-
 def create_query_distances(coordinates):
+    """ creating the query for calling the GEOQUERY  geonear
+      args : coordinates  ( coordinates from the location we will look for distances)
+
+      returns : response  (Return the response of excuting the API)
+      """
     query = [
        {
          '$geoNear': {
@@ -127,6 +118,11 @@ def create_query_distances(coordinates):
     return query
 
 def create_dict_distances(db, origin_coordinates):
+    """ creating o dictionary with the info obtained from the geoquery geonear
+       args : db, origin_coordinates ( )
+
+       returns : response  (Return the response of excuting the API)
+       """
     dict_distances = dict()
     for coll in db.list_collection_names():
         collection = db.get_collection(coll)
@@ -244,7 +240,7 @@ def create_structure(db, origin_coordinates, name_place, language, url_query, cl
     dic_json_api_response_for_city = json_api_to_dic(origin_coordinates, language, url_query, client_id,
                                                         client_secret)
     dic_json_to_mongo = build_dic_json_to_mongo(dic_json_api_response_for_city)
-    create_collections_in_mongo(db, dic_json_to_mongo, name_place)
+    mdb.create_collections_in_mongo(db, dic_json_to_mongo, name_place)
 
 def set_markers(map_cities, df, origin_location):
     icono = Icon( color="red",
