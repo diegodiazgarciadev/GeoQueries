@@ -3,6 +3,10 @@ import pymongo
 from pymongo import MongoClient
 
 def input_data_base():
+    """
+    Ask for a database name, if exist we use the same one, if not,  we create a new one.
+    return : mongo databases
+     """
     client = MongoClient("localhost:27017")
     database_name = input("Database Name: ")
     try:
@@ -31,6 +35,13 @@ def export_dump (name, json_to_save) :
 
 
 def create_collections_in_mongo(db, dic_json_to_mongo, place):
+    """
+    Create collections in mongo.
+    Args:
+        db (database): name of the file,
+        dic_json_to_mongo (dict) : dictionary of jsons with the info of a city (all searches by parameters)
+        place (str) : Name of the city, so that we can use to save  bak files
+       """
     for k, v in dic_json_to_mongo.items():
         file_path = f"./data/{k}_{place}.json"
         export_dump(file_path, v)
