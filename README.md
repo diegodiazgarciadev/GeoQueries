@@ -77,6 +77,21 @@ The winner will be the one with less value, in this case Brussels (diegem), and 
 
 ![image](https://user-images.githubusercontent.com/82879300/132257610-2841cd67-d2f3-4271-b5ba-2b3caf199a30.png)
 
+### Libraries used
+
+* pandas
+* os
+* dotenv
+* folium
+* requests
+* numpy
+* geopy
+* mongodbFunctions
+* functools
+* operator
+* json
+* pymongo
+
 
 
 
