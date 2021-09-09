@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 from folium import Choropleth, Circle, Marker, Icon, Map
 from geopy.geocoders import Nominatim
-from pymongo import MongoClient
 import src.mongodbFunctions as mdb
 from functools import reduce
 import operator
@@ -69,7 +68,7 @@ def getFromDict(diccionario, mapa):
 
 def json_reduced(response, type_=""):
     """
-    Create a reduce jason with the paremeter we want to keep from the response.
+    Create a reduced json with the parameter we want to keep from the response.
     Args:
         response (response): response from an API call in foursquare
     Returns:
@@ -327,74 +326,65 @@ def input_cities(list_sp, list_en):
         location_geo1 = geolocator.geocode(city_name1)
         city_location1 = [location_geo1.latitude, location_geo1.longitude]
         city_name1 = city_name1.replace(" ", "_")
+
+        while True:
+            city_lang_input1 = input("select a language for the first city: (en/sp): ")
+            if city_lang_input1.lower() == 'en':
+                city_lang1 = list_en
+                break
+            if city_lang_input1.lower() == 'sp':
+                city_lang1 = list_sp
+                break
     except:
         city_location1 = [37.402559152869856, -6.006329402641001]
         city_name1 = "seville_cartuja"
         print("default location 1 : ", city_name1)
+        city_lang1 = list_sp
 
-    while True :
-        city_lang_input1 = input("select a language for the first city: (en/sp): ")
-        if city_lang_input1.lower() == 'en':
-            city_lang1 = list_en
-            break
-        if city_lang_input1.lower() == 'sp':
-            city_lang1 = list_sp
-            break
 
     city_name2 = input("Set the second city: ")
     try:
         location_geo2 = geolocator.geocode(city_name2)
         city_location2 = [location_geo2.latitude, location_geo2.longitude]
         city_name2 = city_name2.replace(" ", "_")
+
+        while True:
+            city_lang_input2 = input("select a language for the first city: (en/sp): ")
+            if city_lang_input2.lower() == 'en':
+                city_lang2 = list_en
+                break
+            if city_lang_input2.lower() == 'sp':
+                city_lang2 = list_sp
+                break
     except:
         city_location2 = [50.888243561864115, 4.445462993709954]
         city_name2 = "brussels_diegem"
         print("default location 2 : ", city_name2)
+        city_lang2 = list_en
 
-    while True :
-        city_lang_input2 = input("select a language for the first city: (en/sp): ")
-        if city_lang_input2.lower() == 'en':
-            city_lang2 = list_en
-            break
-        if city_lang_input2.lower() == 'sp':
-            city_lang2 = list_sp
-            break
+
 
     city_name3 = input("Set the third city: ")
     try:
         location_geo3 = geolocator.geocode(city_name3)
         city_location3 = [location_geo3.latitude, location_geo3.longitude]
         city_name3 = city_name3.replace(" ", "_")
+
+        while True:
+            city_lang_input3 = input("select a language for the first city: (en/sp): ")
+            if city_lang_input3.lower() == 'en':
+                city_lang3 = list_en
+                break
+            if city_lang_input3.lower() == 'sp':
+                city_lang3 = list_sp
+                break
     except:
         city_location3 = [51.42136762437117, -0.9924852129899059]
         city_name3 = "reading_greenpark"
         print("default location 3 : ", city_name3)
+        city_lang3 = list_en
 
-    while True:
-        city_lang_input3 = input("select a language for the first city: (en/sp): ")
-        if city_lang_input3.lower() == 'en':
-            city_lang3 = list_en
-            break
-        if city_lang_input3.lower() == 'sp':
-            city_lang3 = list_sp
-            break
 
     return city_name1, city_location1, city_name2, city_location2, city_name3, city_location3, city_lang1, city_lang2, city_lang3
 
 
-def input_data_base():
-    client = MongoClient("localhost:27017")
-    database_name = input("Database Name: ")
-    try:
-        db = client[database_name]
-        dblist = client.list_database_names()
-        if database_name in dblist:
-              print("The database exists.")
-        else:
-            print("Creating database....", database_name)
-            print("Database created")
-    except:
-        db = client.get_database("project3")
-        print("loading existing data base")
-    print(db.name)
-    return db

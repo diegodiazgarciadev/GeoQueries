@@ -1,6 +1,23 @@
 import json
 import pymongo
+from pymongo import MongoClient
 
+def input_data_base():
+    client = MongoClient("localhost:27017")
+    database_name = input("Database Name: ")
+    try:
+        db = client[database_name]
+        dblist = client.list_database_names()
+        if database_name in dblist:
+              print("The database exists.")
+        else:
+            print("Creating database....", database_name)
+            print("Database created")
+    except:
+        db = client.get_database("project3")
+        print("loading existing data base")
+    print(db.name)
+    return db
 
 def export_dump (name, json_to_save) :
     """
